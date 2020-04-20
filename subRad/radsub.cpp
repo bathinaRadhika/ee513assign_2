@@ -4,7 +4,7 @@
 #include "MQTTClient.h"
 #include <stdio.h>
 
-#define ADDRESS     "tcp://192.168.0.193:1883"
+#define ADDRESS     "tcp://95.45.154.211:1883"
 #define CLIENTID    "rpi2"
 #define AUTHMETHOD  "radhika"
 #define AUTHTOKEN   "radhiga"
@@ -43,8 +43,8 @@ void connlost(void *context, char *cause) {
 }
 
 int main(int argc, char* argv[]) {
- 
-  
+
+
 
     MQTTClient client;
     MQTTClient_connectOptions opts = MQTTClient_connectOptions_initializer;
@@ -67,8 +67,8 @@ int main(int argc, char* argv[]) {
            "Press Q<Enter> to quit\n\n", TOPIC, CLIENTID, QOS);
     MQTTClient_subscribe(client, TOPIC, QOS);
 
-    
- 
+
+
     do {
         ch = getchar();
     } while(ch!='Q' && ch != 'q');

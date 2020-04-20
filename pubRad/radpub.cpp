@@ -15,7 +15,7 @@ using namespace exploringRPi;
 
 
 //Please replace the following address with the address of your server
-#define ADDRESS    "tcp://192.168.0.193:1883"  // server ip
+#define ADDRESS    "tcp://95.45.154.211:1883"  // server ip
 #define CLIENTID   "rpi1"
 #define AUTHMETHOD "radhika"
 #define AUTHTOKEN  "radhiga"
@@ -39,8 +39,8 @@ float getCPUTemperature() {        // get the CPU temperature
 
 
 int main(int argc, char* argv[]) {
-   
-   char str_payload1[100];  
+
+   char str_payload1[100];
    char str_payload2[100];
    char str_payload3[100];
    char str_payload4[100];
@@ -48,20 +48,20 @@ int main(int argc, char* argv[]) {
    MQTTClient_connectOptions opts = MQTTClient_connectOptions_initializer;
    MQTTClient_message pubmsg = MQTTClient_message_initializer;
    MQTTClient_deliveryToken token;
-   MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_DEFAULT, NULL);  
-   MQTTClient_willOptions willmsg=MQTTClient_willOptions_initializer; 
+   MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_DEFAULT, NULL);
+   MQTTClient_willOptions willmsg=MQTTClient_willOptions_initializer;
    opts.cleansession = false;
    opts.keepAliveInterval = 20;
    opts.username = AUTHMETHOD;
    opts.password = AUTHTOKEN;
    opts.will=&willmsg;
-   
-  
+
+
    willmsg.topicName=TOPIC; // selecting for topic
    willmsg.message="sensor Disconnected";
    willmsg.qos=QOS;
    willmsg.retained=0;
-   
+
    int rc;
    if ((rc = MQTTClient_connect(client, &opts)) != MQTTCLIENT_SUCCESS) {
       cout << "Failed to connect, return code " << rc << endl;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
   timeinfo = localtime (&rawtime);
 
 
-// Time  
+// Time
    sprintf(str_payload2, "{\"ee513\":{\"CPUTime\": %s }}", asctime(timeinfo));
    pubmsg.payload = str_payload2;
    pubmsg.payloadlen = strlen(str_payload2);
@@ -100,11 +100,11 @@ int main(int argc, char* argv[]) {
    ADXL345 sensor(1,0x53);
    sensor.setResolution(ADXL345::NORMAL);
    sensor.setRange(ADXL345::PLUSMINUS_4_G);
-   
-        
-        
 
-//publishing 
+
+
+
+//publishing
    sprintf(str_payload3, "{\"ee513\":{\"pitch\": %f }}", sensor.getPitchRoll(1)); // 1 for pitch
    pubmsg.payload = str_payload3;
    pubmsg.payloadlen = strlen(str_payload3);
@@ -113,9 +113,9 @@ int main(int argc, char* argv[]) {
    MQTTClient_publishMessage(client, TOPIC, &pubmsg, &token);
    cout << "Waiting for up to " << (int)(TIMEOUT/1000) <<
         " seconds for publication of " << str_payload3 <<
-        " \non topic " << TOPIC << " for ClientID: " << CLIENTID << endl; 
-        
-/*MQTT publisher value for ROLL*/   
+        " \non topic " << TOPIC << " for ClientID: " << CLIENTID << endl;
+
+/*MQTT publisher value for ROLL*/
    sprintf(str_payload4, "{\"ee513\":{\"roll\": %f }}", sensor.getPitchRoll(2));  // any integer other than 1 is for roll
    pubmsg.payload = str_payload4;
    pubmsg.payloadlen = strlen(str_payload4);
@@ -124,8 +124,8 @@ int main(int argc, char* argv[]) {
    MQTTClient_publishMessage(client,TOPIC , &pubmsg, &token);
    cout << "Waiting for up to " << (int)(TIMEOUT/1000) <<
         " seconds for publication of " << str_payload4 <<
-        "\non topic " << TOPIC << " for ClientID: " << CLIENTID << endl; 
-  
+        "\non topic " << TOPIC << " for ClientID: " << CLIENTID << endl;
+
    rc = MQTTClient_waitForCompletion(client, token, TIMEOUT);
    cout << "Message with token " << (int)token << " delivered." << endl;
    MQTTClient_disconnect(client, 10000);
